@@ -69,13 +69,15 @@
         <input type="password" id="password" placeholder="Enter password">
 
         <label>Department</label>
-        <select id="department">
-            <option value="">Select Department</option>
-            <option value="CSE">CSE</option>
-            <option value="ECE">ECE</option>
-            <option value="EEE">EEE</option>
-            <option value="MECH">MECH</option>
-        </select>
+            <select id="department">
+                <option value="">Select Department</option>
+                <option value="CSE">CSE</option>
+                <option value="IT">IT</option>
+                <option value="ECE">ECE</option>
+                <option value="EEE">EEE</option>
+                <option value="Mechanical">Mechanical</option>
+            </select>
+
 
         <label>Gender</label>
         <select id="gender">
@@ -101,8 +103,16 @@ function validateForm() {
     var gender = document.getElementById("gender").value;
     var message = document.getElementById("message");
 
+    var regnoPattern = /^\d{2}[A-Z]{3}\d{4}$/;
+
     if (name === "" || regno === "" || email === "" || password === "" || department === "" || gender === "") {
         message.innerHTML = "All fields are mandatory!";
+        message.className = "error";
+        return false;
+    }
+
+    if (!regnoPattern.test(regno)) {
+        message.innerHTML = "Register Number must be in format: 23MIS0146";
         message.className = "error";
         return false;
     }
@@ -118,6 +128,7 @@ function validateForm() {
     return false; // prevent actual submit
 }
 </script>
+
 
 </body>
 </html>
