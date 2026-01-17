@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        .container {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0 12px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+        .success {
+            color: green;
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Student Registration</h2>
+
+    <form id="registrationForm" onsubmit="return validateForm()">
+
+        <label>Student Name</label>
+        <input type="text" id="name" placeholder="Enter full name">
+
+        <label>Register Number</label>
+        <input type="text" id="regno" placeholder="Enter register number">
+
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter email">
+
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter password">
+
+        <label>Department</label>
+        <select id="department">
+            <option value="">Select Department</option>
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="EEE">EEE</option>
+            <option value="MECH">MECH</option>
+        </select>
+
+        <label>Gender</label>
+        <select id="gender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+
+        <button type="submit">Register</button>
+
+        <p id="message"></p>
+
+    </form>
+</div>
+
+<script>
+function validateForm() {
+    var name = document.getElementById("name").value;
+    var regno = document.getElementById("regno").value;
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+    var department = document.getElementById("department").value;
+    var gender = document.getElementById("gender").value;
+    var message = document.getElementById("message");
+
+    if (name === "" || regno === "" || email === "" || password === "" || department === "" || gender === "") {
+        message.innerHTML = "All fields are mandatory!";
+        message.className = "error";
+        return false;
+    }
+
+    if (password.length < 6) {
+        message.innerHTML = "Password must be at least 6 characters!";
+        message.className = "error";
+        return false;
+    }
+
+    message.innerHTML = "Student Registered Successfully!";
+    message.className = "success";
+    return false; // prevent actual submit
+}
+</script>
+
+</body>
+</html>
