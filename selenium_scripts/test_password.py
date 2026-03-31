@@ -18,7 +18,7 @@ class TestPassword(unittest.TestCase):
 
     def fill_required_fields(self):
         d = self.driver
-        d.find_element(By.ID, "name").send_keys("Aman")
+        d.find_element(By.ID, "name").send_keys("Amal")
         d.find_element(By.ID, "regno").send_keys("23MIS0146")
         d.find_element(By.ID, "email").send_keys("test@gmail.com")
         d.find_element(By.ID, "department").send_keys("CSE")
@@ -42,7 +42,7 @@ class TestPassword(unittest.TestCase):
             d.find_element(By.TAG_NAME, "button").click()
 
             msg = d.find_element(By.ID, "message").text
-            assert "Password must have" in msg
+            assert "Password must be at least 6 characters" in msg
 
         self.run_test("TC_08", "Enter weak password", logic)
 

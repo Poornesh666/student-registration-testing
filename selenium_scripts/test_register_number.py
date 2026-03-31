@@ -23,7 +23,7 @@ class TestRegisterNumber(unittest.TestCase):
 
     def fill_common(self):
         d = self.driver
-        d.find_element(By.ID, "name").send_keys("Aman")
+        d.find_element(By.ID, "name").send_keys("Noel")
         d.find_element(By.ID, "email").send_keys("a@gmail.com")
         d.find_element(By.ID, "password").send_keys("Abc@123")  # fixed
         d.find_element(By.ID, "department").send_keys("CSE")

@@ -29,7 +29,7 @@ class TestMandatory(unittest.TestCase):
             d = self.driver
             d.find_element(By.TAG_NAME, "button").click()
             msg = d.find_element(By.ID, "message").text
-            assert msg == "All fields are mandatory!"
+            assert "All fields are mandatory!" in msg
 
         self.run_test("TC_02", "Submit empty form", logic)
 
@@ -37,10 +37,10 @@ class TestMandatory(unittest.TestCase):
     def test_partial_form(self):
         def logic():
             d = self.driver
-            d.find_element(By.ID, "name").send_keys("Aman")
+            d.find_element(By.ID, "name").send_keys("Poornesh")
             d.find_element(By.TAG_NAME, "button").click()
             msg = d.find_element(By.ID, "message").text
-            assert msg == "All fields are mandatory!"
+            assert "All fields are mandatory!" in msg
 
         self.run_test("TC_03", "Submit partially filled form (only name)", logic)
 
@@ -48,15 +48,14 @@ class TestMandatory(unittest.TestCase):
     def test_department_not_selected(self):
         def logic():
             d = self.driver
-            d.find_element(By.ID, "name").send_keys("Aman")
+            d.find_element(By.ID, "name").send_keys("Amal")
             d.find_element(By.ID, "regno").send_keys("23MIS0146")
             d.find_element(By.ID, "email").send_keys("a@gmail.com")
             d.find_element(By.ID, "password").send_keys("Abc@123")  # fixed
             d.find_element(By.ID, "gender").send_keys("Male")
             d.find_element(By.TAG_NAME, "button").click()
-
             msg = d.find_element(By.ID, "message").text
-            assert msg == "All fields are mandatory!"
+            assert "All fields are mandatory!" in msg
 
         self.run_test("TC_12", "Submit form without selecting department", logic)
 
@@ -70,9 +69,8 @@ class TestMandatory(unittest.TestCase):
             d.find_element(By.ID, "password").send_keys("Abc@123")  # fixed
             d.find_element(By.ID, "department").send_keys("CSE")
             d.find_element(By.TAG_NAME, "button").click()
-
             msg = d.find_element(By.ID, "message").text
-            assert msg == "All fields are mandatory!"
+            assert "All fields are mandatory!" in msg
 
         self.run_test("TC_13", "Submit form without selecting gender", logic)
 

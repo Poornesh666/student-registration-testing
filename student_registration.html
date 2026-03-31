@@ -1,153 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Student Registration Application</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-        }
-
-        .container {
-            width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 5px;
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 8px;
-            margin: 6px 0 12px 0;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .error {
-            color: red;
-            font-size: 14px;
-        }
-
-        .success {
-            color: green;
-            font-size: 16px;
-            text-align: center;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-
     <div class="container">
-        <h2>Student Registration</h2>
-
-        <form id="registrationForm" onsubmit="return validateForm()">
-
-            <label>Student Name</label>
-            <input type="text" id="name" placeholder="Enter full name">
-
-            <label>Register Number</label>
-            <input type="text" id="regno" placeholder="Enter register number">
-
-            <label>Email</label>
-            <input type="email" id="email" placeholder="Enter email">
-
-            <label>Password</label>
-            <input type="password" id="password" placeholder="Enter password">
-
-            <label>Department</label>
-            <select id="department">
-                <option value="">Select Department</option>
-                <option value="CSE">CSE</option>
-                <option value="IT">IT</option>
-                <option value="ECE">ECE</option>
-                <option value="EEE">EEE</option>
-                <option value="Mechanical">Mechanical</option>
-            </select>
-
-
-            <label>Gender</label>
-            <select id="gender">
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
-
-            <button type="submit">Register</button>
-
+        <h2>Join the Portal</h2>
+        <p class="subtitle">Complete the form to register as a student</p>
+        
+        <form id="registrationForm" onsubmit="return validateRegistration()">
+            <div class="form-group">
+                <label for="name">Student Name</label>
+                <input type="text" id="name" placeholder="Full Name">
+            </div>
+            
+            <div class="form-group">
+                <label for="regno">Register Number (e.g., 23MIS0146)</label>
+                <input type="text" id="regno" placeholder="Reg No.">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Institutional Email</label>
+                <input type="email" id="email" placeholder="example@university.edu">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••">
+            </div>
+            
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department">
+                    <option value="">Select Department</option>
+                    <option value="CSE">CSE</option>
+                    <option value="IT">IT</option>
+                    <option value="ECE">ECE</option>
+                    <option value="EEE">EEE</option>
+                    <option value="Mechanical">Mechanical</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">Gender Identity</label>
+                <select id="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <button type="submit" id="registerBtn">Create Account</button>
             <p id="message"></p>
-
+            
+            <div class="link-group">
+                Already registered? <a href="login.html">Sign In Here</a>
+            </div>
         </form>
     </div>
-
-    <script>
-        function validateForm() {
-            var name = document.getElementById("name").value.trim();
-            var regno = document.getElementById("regno").value;
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            var department = document.getElementById("department").value;
-            var gender = document.getElementById("gender").value;
-            var message = document.getElementById("message");
-
-            var regnoPattern = /^\d{2}[A-Z]{3}\d{4}$/;
-            var namePattern = /^[A-Za-z ]+$/;
-            var passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{6,}$/;
-
-            if (name === "" || regno === "" || email === "" || password === "" || department === "" || gender === "") {
-                message.innerHTML = "All fields are mandatory!";
-                message.className = "error";
-                return false;
-            }
-
-            if (!namePattern.test(name)) {
-                message.innerHTML = "Name must contain only alphabets!";
-                message.className = "error";
-                return false;
-            }
-
-            if (!regnoPattern.test(regno)) {
-                message.innerHTML = "Register Number must be in format: 23MIS0146";
-                message.className = "error";
-                return false;
-            }
-
-            if (!passwordPattern.test(password)) {
-                message.innerHTML = "Password must have 1 uppercase, 1 number, 1 special character!";
-                message.className = "error";
-                return false;
-            }
-
-            message.innerHTML = "Student Registered Successfully!";
-            message.className = "success";
-            return false;
-        }
-    </script>
-
-
+    <script src="js/script.js"></script>
 </body>
 </html>

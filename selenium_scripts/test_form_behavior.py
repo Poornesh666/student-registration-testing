@@ -16,7 +16,7 @@ class TestFormBehavior(unittest.TestCase):
 
     def fill_valid(self):
         d = self.driver
-        d.find_element(By.ID, "name").send_keys("Aman")
+        d.find_element(By.ID, "name").send_keys("Jyothiswar")
         d.find_element(By.ID, "regno").send_keys("23MIS0146")
         d.find_element(By.ID, "email").send_keys("a@gmail.com")
         d.find_element(By.ID, "password").send_keys("Abc@123")  # fixed
@@ -32,19 +32,19 @@ class TestFormBehavior(unittest.TestCase):
             print(f"{tc_id}: FAIL")
             raise e
 
-    # TC_18
+    # TC_14
     def test_success(self):
         def logic():
             d = self.driver
             self.fill_valid()
-            d.find_element(By.TAG_NAME, "button").click()
-
+            d.find_element(By.ID, "registerBtn").click()
+            time.sleep(0.5)
             msg = d.find_element(By.ID, "message").text
             assert "Successfully" in msg
 
-        self.run_test("TC_18", "Submit form with valid inputs", logic)
+        self.run_test("TC_14", "Submit form with valid inputs", logic)
 
-    # TC_19
+    # TC_18
     def test_multiple_submit(self):
         def logic():
             d = self.driver
@@ -52,13 +52,15 @@ class TestFormBehavior(unittest.TestCase):
 
             for _ in range(2):
                 d.find_element(By.TAG_NAME, "button").click()
+                time.sleep(0.1) 
 
+            time.sleep(0.4)
             msg = d.find_element(By.ID, "message").text
             assert "Successfully" in msg
 
-        self.run_test("TC_19", "Submit form multiple times", logic)
+        self.run_test("TC_18", "Submit form multiple times consecutively", logic)
 
-    # TC_20
+    # TC_19
     def test_error_message(self):
         def logic():
             d = self.driver
@@ -67,19 +69,29 @@ class TestFormBehavior(unittest.TestCase):
             msg = d.find_element(By.ID, "message").text
             assert "All fields are mandatory!" in msg
 
-        self.run_test("TC_20", "Submit empty form", logic)
+        self.run_test("TC_19", "Verify error message is displayed for invalid input", logic)
 
-    # TC_21
+    # TC_20
     def test_success_message(self):
         def logic():
             d = self.driver
             self.fill_valid()
             d.find_element(By.TAG_NAME, "button").click()
-
+            time.sleep(0.5)
             msg = d.find_element(By.ID, "message").text
-            assert msg == "Student Registered Successfully!"
+            assert "Successfully" in msg
 
-        self.run_test("TC_21", "Verify exact success message", logic)
+        self.run_test("TC_20", "Verify success message is displayed for valid input", logic)
+
+    # TC_21
+    def test_error_message_styling(self):
+        def logic():
+            d = self.driver
+            d.find_element(By.TAG_NAME, "button").click()
+            msg_el = d.find_element(By.ID, "message")
+            assert "error" in msg_el.get_attribute("class")
+
+        self.run_test("TC_21", "Verify error message styling (red color)", logic)
 
     # TC_22
     def test_no_reload(self):

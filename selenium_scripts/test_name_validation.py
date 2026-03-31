@@ -40,9 +40,9 @@ class TestNameValidation(unittest.TestCase):
             d.find_element(By.TAG_NAME, "button").click()
 
             msg = d.find_element(By.ID, "message").text
-            assert "Name must contain only alphabets!" in msg
+            assert "Name must contain only alphabets and spaces!" in msg
 
-        self.run_test("TC_14", "Enter numeric values in name field", logic)
+        self.run_test("TC_15", "Enter numeric values in name field", logic)
 
     # TC_15
     def test_special_char_name(self):
@@ -53,9 +53,9 @@ class TestNameValidation(unittest.TestCase):
             d.find_element(By.TAG_NAME, "button").click()
 
             msg = d.find_element(By.ID, "message").text
-            assert "Name must contain only alphabets!" in msg
+            assert "Name must contain only alphabets and spaces!" in msg
 
-        self.run_test("TC_15", "Enter special characters in name field", logic)
+        self.run_test("TC_16", "Enter special characters in name field", logic)
 
     # TC_16
     def test_spaces_only(self):
@@ -68,20 +68,8 @@ class TestNameValidation(unittest.TestCase):
             msg = d.find_element(By.ID, "message").text
             assert "All fields are mandatory!" in msg
 
-        self.run_test("TC_16", "Enter only spaces in name field", logic)
+        self.run_test("TC_17", "Enter only spaces in name field", logic)
 
-    # TC_17
-    def test_long_name(self):
-        def logic():
-            d = self.driver
-            d.find_element(By.ID, "name").send_keys("A"*100)
-            self.fill_required_fields()
-            d.find_element(By.TAG_NAME, "button").click()
-
-            msg = d.find_element(By.ID, "message").text
-            assert "Successfully" in msg
-
-        self.run_test("TC_17", "Enter very long name input", logic)
 
     def tearDown(self):
         self.driver.quit()

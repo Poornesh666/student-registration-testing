@@ -16,7 +16,7 @@ class TestEmail(unittest.TestCase):
 
     def fill_required_fields(self):
         d = self.driver
-        d.find_element(By.ID, "name").send_keys("Aman")
+        d.find_element(By.ID, "name").send_keys("Noel")
         d.find_element(By.ID, "regno").send_keys("23MIS0146")
         d.find_element(By.ID, "password").send_keys("Abc@123")
         d.find_element(By.ID, "department").send_keys("CSE")
@@ -38,7 +38,7 @@ class TestEmail(unittest.TestCase):
             d.find_element(By.ID, "email").send_keys("test@gmail.com")
             self.fill_required_fields()
             d.find_element(By.TAG_NAME, "button").click()
-
+            time.sleep(0.5) 
             msg = d.find_element(By.ID, "message").text
             assert "Successfully" in msg
 

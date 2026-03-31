@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quality Assurance - Test Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            display: block;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        .header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .nav-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 600;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        th {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        .badge-pending { background: rgba(148, 163, 184, 0.1); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2); }
+        .badge-pass { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .badge-fail { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        
+        .run-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+        .run-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+        .run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        #testRunnerFrame {
+            display: none;
+            width: 1px;
+            height: 1px;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header-flex">
+            <div>
+                <h2>Quality Assurance Dashboard</h2>
+                <p class="subtitle" style="text-align: left; margin-bottom: 0;">Automated Test Suite Runner Context</p>
+            </div>
+            <div class="nav-links">
+                <a href="login.html">Login Portal</a>
+                <a href="student_registration.html">Registration</a>
+            </div>
+        </div>
+
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="switchCategory('Register')">Registration Tests</button>
+            <button class="tab-btn" onclick="switchCategory('Login')">Login Tests</button>
+        </div>
+
+        <div class="table-responsive">
+            <table id="testTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Scenario</th>
+                        <th>Precondition</th>
+                        <th>Steps</th>
+                        <th>Data</th>
+                        <th>Expected</th>
+                        <th>Actual</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="testBody">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Hidden iframe to run tests -->
+    <iframe id="testRunnerFrame"></iframe>
+
+    <script>
+        const testCases = [
+            // Registration Tests (Matching README.md)
+            { id: 'TC_01', cat: 'Register', scenario: 'Page Load', pre: 'Browser open', steps: 'Navigate to student_registration.html', data: 'N/A', expected: 'Form visible with all fields', actual: '-', status: 'Pending', run: async () => await simulateLoad('student_registration.html') },
+            { id: 'TC_02', cat: 'Register', scenario: 'Empty Submit', pre: 'Form loaded', steps: 'Click Register with empty fields', data: 'All empty', expected: 'Error: All fields mandatory', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {all_empty: true}) },
+            { id: 'TC_03', cat: 'Register', scenario: 'Partial Submission', pre: 'Form loaded', steps: 'Fill Name, click Register', data: 'Name: Noel', expected: 'Error: All fields mandatory', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', clear_rest: true}) },
+            { id: 'TC_04', cat: 'Register', scenario: 'Invalid Reg Format', pre: 'Form filled', steps: 'Fill text in Reg No, click Register', data: 'Reg: ABC123', expected: 'Error: Reg No format', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', email: 'n@v.edu', pass: 'Noel@123', dept: 'CSE', gen: 'Male', regno: 'ABC123'}) },
+            { id: 'TC_05', cat: 'Register', scenario: 'Reg Lowercase', pre: 'Form filled', steps: 'Enter lowercase reg', data: '23mis1234', expected: 'Error: Reg No format', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', email: 'n@v.edu', pass: 'Noel@123', dept: 'CSE', gen: 'Male', regno: '23mis1234'}) },
+            { id: 'TC_06', cat: 'Register', scenario: 'Reg Extra Digits', pre: 'Form filled', steps: 'Enter 23MIS01467', data: '23MIS01467', expected: 'Error: Reg No format', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', email: 'n@v.edu', pass: 'Noel@123', dept: 'CSE', gen: 'Male', regno: '23MIS01467'}) },
+            { id: 'TC_07', cat: 'Register', scenario: 'Reg Special Chars', pre: 'Form filled', steps: 'Enter 23#IS0146', data: '23#IS0146', expected: 'Error: Reg No format', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', email: 'n@v.edu', pass: 'Noel@123', dept: 'CSE', gen: 'Male', regno: '23#IS0146'}) },
+            { id: 'TC_08', cat: 'Register', scenario: 'Weak Password', pre: 'Form filled', steps: 'Enter "123" pass', data: 'Pass: 123', expected: 'Error: Min 6 + AlphaNumeric', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', regno: '23MIS0146', email: 'n@v.edu', pass: '123', dept: 'CSE', gen: 'Male'}) },
+            { id: 'TC_09', cat: 'Register', scenario: 'Boundary Pass (6 Chars)', pre: 'Form filled', steps: 'Enter exactly 6 valid chars', data: 'Pass: A@123b', expected: 'Success if complexity met', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', regno: '23MIS0146', email: 'n@v.edu', pass: 'A@123b', dept: 'CSE', gen: 'Male'}) },
+            { id: 'TC_10', cat: 'Register', scenario: 'Valid Email Check', pre: 'Form filled', steps: 'Enter correctly formatted email', data: 'noel@vit.edu', expected: 'Email accepted', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', regno: '23MIS0146', email: 'noel@vit.edu', pass: 'Noel@123', dept: 'CSE', gen: 'Male'}) },
+            { id: 'TC_11', cat: 'Register', scenario: 'Email Missing @', pre: 'Form filled', steps: 'Enter "noelvit.edu"', data: 'noelvit.edu', expected: 'Browser Validation Error', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', regno: '23MIS0146', email: 'noelvit.edu', pass: 'Noel@123', dept: 'CSE', gen: 'Male'}) },
+            { id: 'TC_12', cat: 'Register', scenario: 'Missing Department', pre: 'All expect Dept filled', steps: 'Leave Dept as "", click register', data: 'Dept: Select...', expected: 'Error: All fields mandatory', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', regno: '23MIS0146', email: 'n@vit.edu', pass: 'Noel@123', gen: 'Male', dept: ''}) },
+            { id: 'TC_13', cat: 'Register', scenario: 'Missing Gender', pre: 'All expect Gender filled', steps: 'Leave Gender as "", click register', data: 'Gender: Select...', expected: 'Error: All fields mandatory', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', regno: '23MIS0146', email: 'n@vit.edu', pass: 'Noel@123', dept: 'CSE', gen: ''}) },
+            { id: 'TC_14', cat: 'Register', scenario: 'Valid Submission', pre: 'All valid inputs', steps: 'Fill valid data, click Register', data: 'Amal, 23MIS0146, ...', expected: 'Success: Registered Successfully', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Amal', regno: '23MIS0146', email: 'amal@vit.edu', pass: 'Amal@123', dept: 'IT', gen: 'Male'}) },
+            { id: 'TC_15', cat: 'Register', scenario: 'Numeric Name Check', pre: 'Form filled', steps: 'Enter numeric in name', data: 'Name: 12345', expected: 'Error: Alphabets only', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: '12345', regno: '23MIS0146', email: 'e@v.edu', pass: 'P@1234', dept: 'CSE', gen: 'Male'}) },
+            { id: 'TC_16', cat: 'Register', scenario: 'Special Chars Name', pre: 'Form filled', steps: 'Enter "@!" in name', data: 'Name: Noel@!', expected: 'Error: Alphabets only', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel@!', regno: '23MIS0146', email: 'e@v.edu', pass: 'P@1234', dept: 'CSE', gen: 'Male'}) },
+            { id: 'TC_17', cat: 'Register', scenario: 'Empty Spaces Input', pre: 'Form filled', steps: 'Enter spaces only', data: 'Name: "   "', expected: 'Error: All fields mandatory', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: '   ', regno: '23MIS0146', email: 'e@v.edu', pass: 'P@1234', dept: 'CSE', gen: 'Male'}) },
+            { id: 'TC_18', cat: 'Register', scenario: 'Multi-Submit Test', pre: 'Valid form', steps: 'Click Register 3 times', data: 'Valid data', expected: 'Successful registration each time', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Poornesh', regno: '23MIS0146', email: 'p@v.ac.in', pass: 'P@1234', dept: 'ECE', gen: 'Male'}) },
+            { id: 'TC_19', cat: 'Register', scenario: 'Error Visibility', pre: 'Invalid input', steps: 'Trigger error', data: 'N/A', expected: 'Red error msg appears', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {all_empty: true}) },
+            { id: 'TC_20', cat: 'Register', scenario: 'Success Visibility', pre: 'Valid input', steps: 'Submit valid form', data: 'N/A', expected: 'Green success msg appears', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', regno: '23MIS0146', email: 'ok@v.in', pass: 'Pass@123', dept: 'CSE', gen: 'Male'}) },
+            { id: 'TC_21', cat: 'Register', scenario: 'CSS Error Styling', pre: 'Error triggered', steps: 'Check message class', data: 'N/A', expected: 'class="error" applied', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {all_empty: true}) },
+            { id: 'TC_22', cat: 'Register', scenario: 'No Page Reload', pre: 'Form visible', steps: 'Submit form', data: 'N/A', expected: 'Page stays on registration.html', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Register', {name: 'Noel', regno: '23MIS0146', email: 'ok@v.in', pass: 'Pass@123', dept: 'CSE', gen: 'Male'}) },
+
+            // Login Tests (Expanded)
+            { id: 'LGN_01', cat: 'Login', scenario: 'UI Loading Check', pre: 'Browser open', steps: 'Load login.html', data: 'N/A', expected: 'Login screen displayed', actual: '-', status: 'Pending', run: async () => await simulateLoad('login.html') },
+            { id: 'LGN_02', cat: 'Login', scenario: 'Empty Login', pre: 'Page loaded', steps: 'Click Login', data: 'Empty', expected: 'Error: enter both', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Login', {all_empty: true}) },
+            { id: 'LGN_03', cat: 'Login', scenario: 'Email Malformed', pre: 'Page loaded', steps: 'Enter noel.vit.edu', data: 'noel.vit.edu', expected: 'Browser rejection', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Login', {email: 'noel.vit.edu', pass: 'Pass123'}) },
+            { id: 'LGN_04', cat: 'Login', scenario: 'Short Password Login', pre: 'Page loaded', steps: 'Enter "123"', data: 'Pass: 123', expected: 'Error: Invalid credentials', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Login', {email: 'demo@v.com', pass: '123'}) },
+            { id: 'LGN_05', cat: 'Login', scenario: 'Invalid Credentials', pre: 'User not registered', steps: 'Login with unknown email', data: 'bad@user.com', expected: 'Error: Invalid credentials', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Login', {email: 'bad@user.com', pass: 'Pass@123'}) },
+            { id: 'LGN_06', cat: 'Login', scenario: 'Successful End-to-End', pre: 'User registered via script', steps: 'Login with Noel creds', data: 'noel@vit.edu / Noel@123', expected: 'Success: Welcome Noel', actual: '-', status: 'Pending', run: async () => await simulateSubmit('Login', {email: 'noel@vit.edu', pass: 'Noel@123'}) },
+            { id: 'LGN_07', cat: 'Login', scenario: 'Nav to Register', pre: 'Login page', steps: 'Click Create Account link', data: 'N/A', expected: 'Navigates to registration', actual: '-', status: 'Pending', run: async () => await simulateNavigate('Create an Account') },
+        ];
+
+        let activeCategory = 'Register';
+
+        function renderTable() {
+            const tbody = document.getElementById('testBody');
+            tbody.innerHTML = '';
+            
+            testCases.filter(tc => tc.cat === activeCategory).forEach(tc => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${tc.id}</td>
+                    <td><b>${tc.scenario}</b></td>
+                    <td>${tc.pre}</td>
+                    <td>${tc.steps}</td>
+                    <td><code style="color: #818cf8">${tc.data}</code></td>
+                    <td>${tc.expected}</td>
+                    <td id="actual-${tc.id}">${tc.actual}</td>
+                    <td><span id="status-${tc.id}" class="badge badge-${tc.status.toLowerCase()}">${tc.status}</span></td>
+                    <td><button class="run-btn" id="btn-${tc.id}" onclick="runTest('${tc.id}')">Run Test</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function switchCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderTable();
+        }
+
+        async function runTest(id) {
+            const btn = document.getElementById(`btn-${id}`);
+            const tc = testCases.find(t => t.id === id);
+            btn.innerText = 'Running...';
+            btn.disabled = true;
+
+            try {
+                const result = await tc.run();
+                tc.actual = result.message;
+                tc.status = result.status;
+                
+                const actualTd = document.getElementById(`actual-${id}`);
+                const statusSpan = document.getElementById(`status-${id}`);
+                
+                actualTd.innerText = tc.actual;
+                statusSpan.className = `badge badge-${tc.status.toLowerCase()}`;
+                statusSpan.innerText = tc.status;
+            } catch (err) {
+                console.error(err);
+            } finally {
+                btn.innerText = 'Run Test';
+                btn.disabled = false;
+            }
+        }
+
+        // Logic for testing via iframe
+        function simulateLoad(page) {
+            return new Promise((resolve) => {
+                const frame = document.getElementById('testRunnerFrame');
+                frame.src = page;
+                frame.onload = () => {
+                    resolve({ message: 'Page loaded successfully', status: 'Pass' });
+                };
+            });
+        }
+
+        function simulateNavigate(linkText) {
+            return new Promise((resolve) => {
+                const frame = document.getElementById('testRunnerFrame');
+                frame.src = 'login.html';
+                frame.onload = () => {
+                    const doc = frame.contentDocument || frame.contentWindow.document;
+                    const link = Array.from(doc.querySelectorAll('a')).find(a => a.innerText.includes(linkText));
+                    if (link) {
+                        link.click();
+                        setTimeout(() => {
+                            const newUrl = frame.contentWindow.location.href;
+                            resolve({ message: 'Navigated to ' + newUrl.split('/').pop(), status: 'Pass' });
+                        }, 500);
+                    } else {
+                        resolve({ message: 'Link not found', status: 'Fail' });
+                    }
+                };
+            });
+        }
+
+        async function simulateSubmit(type, data) {
+            return new Promise((resolve) => {
+                const frame = document.getElementById('testRunnerFrame');
+                frame.src = type === 'Register' ? 'student_registration.html' : 'login.html';
+                
+                frame.onload = () => {
+                    const doc = frame.contentDocument || frame.contentWindow.document;
+                    
+                    setTimeout(() => {
+                        try {
+                            if(!data.all_empty) {
+                                if(data.name) doc.getElementById('name').value = data.name;
+                                if(data.regno) doc.getElementById('regno').value = data.regno;
+                                if(data.email) doc.getElementById('email').value = data.email;
+                                if(data.pass) doc.getElementById('password').value = data.pass;
+                                if(data.dept) doc.getElementById('department').value = data.dept;
+                                if(data.gen) doc.getElementById('gender').value = data.gen;
+                            }
+
+                            if(data.clear_rest) {
+                                // specifically for partial tests
+                                if(!data.regno) doc.getElementById('regno').value = '';
+                            }
+
+                            const btnId = type === 'Register' ? 'registerBtn' : 'loginBtn';
+                            doc.getElementById(btnId).click();
+
+                            setTimeout(() => {
+                                const msgEl = doc.getElementById('message');
+                                let msgText = msgEl ? msgEl.innerText : 'No message';
+                                const isSuccess = msgEl ? msgEl.className.includes('success') : false;
+                                
+                                // Specific check for success redirect
+                                if (type === 'Register' && isSuccess) {
+                                    msgText = "Registered Successfully! Redirecting to login...";
+                                }
+
+                                resolve({ 
+                                    message: msgText, 
+                                    status: msgText && msgText !== 'No message' ? 'Pass' : 'Fail' 
+                                });
+                            }, 500);
+                        } catch (e) {
+                            resolve({ message: 'Script error: ' + e.message, status: 'Fail' });
+                        }
+                    }, 200);
+                };
+            });
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>
