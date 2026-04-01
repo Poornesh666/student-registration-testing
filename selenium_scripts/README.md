@@ -1,12 +1,12 @@
-# 🧪 Selenium Automation Testing Suite
+#  Selenium Automation Testing Suite
 
 This directory contains the complete Selenium test suite for the Student Registration and Login Portal. The automation is designed to verify UI elements, form logic, and end-to-end user flows.
 
 ---
 
-## 🗂️ Test Categories
+##  Test Categories
 
-### 📝 Registration Suite (7 Tests)
+###  Registration Suite (7 Tests)
 1. **test_ui.py**: Verifies page title, layout, and visual elements.
 2. **test_mandatory.py**: Ensures the system identifies and marks all required fields.
 3. **test_register_number.py**: Validates strict registration number patterns (e.g., 202*).
@@ -15,7 +15,7 @@ This directory contains the complete Selenium test suite for the Student Registr
 6. **test_name_validation.py**: Ensures names contain only alphabetic characters.
 7. **test_form_behavior.py**: Verifies form reset and submission logic.
 
-### 🔐 Login Suite (7 Tests)
+###  Login Suite (7 Tests)
 1. **login_test_ui.py**: Checks the login page layout and branding.
 2. **login_test_mandatory.py**: Tests field requirement enforcement on login.
 3. **login_test_email_format.py**: Validates email input field on the login page.
@@ -26,7 +26,7 @@ This directory contains the complete Selenium test suite for the Student Registr
 
 ---
 
-## 🚀 Execution Instructions
+##  Execution Instructions
 
 ### Prerequisites
 Ensure you have the following installed:
